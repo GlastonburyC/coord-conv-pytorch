@@ -7,3 +7,8 @@ The image below (taken from https://eng.uber.com/coordconv/) shows how this is i
 ![Coordinate convolution](image8.jpg "From https://eng.uber.com/coordconv/")
 
 Taken and subsequent adaptions added from mkocabas.
+
+
+Added support for:
+1. cuda.FloatTensors
+2. Transpose convolution
