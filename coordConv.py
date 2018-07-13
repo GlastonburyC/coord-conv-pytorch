@@ -70,9 +70,9 @@ class CoordConv(nn.Module):
 
 class CoordConvTranspose(nn.Module):
     """CoordConvTranspose layer for segmentation tasks."""
-    def __init__(self, x_dim, y_dim, with_r, *args, **kwargs):
+    def __init__(self, x_dim, y_dim, radius_channel, *args, **kwargs):
         super(CoordConv, self).__init__()
-        self.addcoord = AddCoords(x_dim=x_dim, y_dim=y_dim, with_r=with_r)
+        self.addcoord = AddCoords(x_dim=x_dim, y_dim=y_dim, radius_channel=radius_channel)
         self.convT = nn.ConvTranspose2d(*args, **kwargs)
 
     def forward(self, in_tensor):
