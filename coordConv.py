@@ -78,4 +78,4 @@ class CoordConvTranspose(nn.Module):
     def forward(self, in_tensor):
         out = self.addcoord(in_tensor)
         out = self.convT(out)
-        return ret
+        return out
