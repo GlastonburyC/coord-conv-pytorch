@@ -1,8 +1,6 @@
 class AddCoords(nn.Module):
-    def __init__(self, x_dim=64, y_dim=64, radius_channel=False):
+    def __init__(self, radius_channel=False):
         super(AddCoords, self).__init__()
-        self.x_dim = x_dim
-        self.y_dim = y_dim
         self.radius_channel = radius_channel
 
     def forward(self, in_tensor):
@@ -16,19 +14,19 @@ class AddCoords(nn.Module):
         """
         batch_size_tensor = in_tensor.shape[0]
 
-        xx_ones = torch.ones([1, self.x_dim], dtype=torch.int32)
+        xx_ones = torch.ones([1, in_tensor.shape[2]], dtype=torch.int32)
         xx_ones = xx_ones.unsqueeze(-1)
 
-        xx_range = torch.arange(self.x_dim, dtype=torch.int32).unsqueeze(0)
+        xx_range = torch.arange(in_tensor.shape[2], dtype=torch.int32).unsqueeze(0)
         xx_range = xx_range.unsqueeze(1)
 
         xx_channel = torch.matmul(xx_ones, xx_range)
         xx_channel = xx_channel.unsqueeze(-1)
 
-        yy_ones = torch.ones([1, self.y_dim], dtype=torch.int32)
+        yy_ones = torch.ones([1, in_tensor.shape[3]], dtype=torch.int32)
         yy_ones = yy_ones.unsqueeze(1)
 
-        yy_range = torch.arange(self.y_dim, dtype=torch.int32).unsqueeze(0)
+        yy_range = torch.arange(in_tensor.shape[3], dtype=torch.int32).unsqueeze(0)
         yy_range = yy_range.unsqueeze(-1)
 
         yy_channel = torch.matmul(yy_range, yy_ones)
@@ -37,8 +35,8 @@ class AddCoords(nn.Module):
         xx_channel = xx_channel.permute(0, 3, 1, 2)
         yy_channel = yy_channel.permute(0, 3, 1, 2)
 
-        xx_channel = xx_channel.float() / (self.x_dim - 1)
-        yy_channel = yy_channel.float() / (self.y_dim - 1)
+        xx_channel = xx_channel.float() / (in_tensor.shape[2] - 1)
+        yy_channel = yy_channel.float() / (in_tensor.shape[3] - 1)
 
         xx_channel = xx_channel * 2 - 1
         yy_channel = yy_channel * 2 - 1
@@ -57,9 +55,9 @@ class AddCoords(nn.Module):
 
 class CoordConv(nn.Module):
     """ add any additional coordinate channels to the input tensor """
-    def __init__(self, x_dim, y_dim, radius_channel, *args, **kwargs):
+    def __init__(self, radius_channel, *args, **kwargs):
         super(CoordConv, self).__init__()
-        self.addcoord = AddCoords(x_dim=x_dim, y_dim=y_dim, radius_channel=radius_channel)
+        self.addcoord = AddCoords(radius_channel=radius_channel)
         self.conv = nn.Conv2d(*args, **kwargs)
 
     def forward(self, in_tensor):
@@ -70,9 +68,9 @@ class CoordConv(nn.Module):
 
 class CoordConvTranspose(nn.Module):
     """CoordConvTranspose layer for segmentation tasks."""
-    def __init__(self, x_dim, y_dim, radius_channel, *args, **kwargs):
+    def __init__(self, radius_channel, *args, **kwargs):
         super(CoordConv, self).__init__()
-        self.addcoord = AddCoords(x_dim=x_dim, y_dim=y_dim, radius_channel=radius_channel)
+        self.addcoord = AddCoords(radius_channel=radius_channel)
         self.convT = nn.ConvTranspose2d(*args, **kwargs)
 
     def forward(self, in_tensor):
