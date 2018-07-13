@@ -48,7 +48,7 @@ class AddCoords(nn.Module):
 
         if self.radius_channel:
             radius_calc = torch.sqrt(torch.pow(xx_channel - 0.5, 2) + torch.pow(yy_channel - 0.5, 2))
-            out = torch.cat([out, radius_calc], dim=1)
+            out = torch.cat([out, radius_calc], dim=1).cuda()
 
         return out
 
