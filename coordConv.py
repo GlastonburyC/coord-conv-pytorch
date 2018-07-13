@@ -44,7 +44,7 @@ class AddCoords(nn.Module):
         xx_channel = xx_channel.repeat(batch_size_tensor, 1, 1, 1)
         yy_channel = yy_channel.repeat(batch_size_tensor, 1, 1, 1)
 
-        out = torch.cat([in_tensor, xx_channel, yy_channel], dim=1)
+        out = torch.cat([in_tensor.cuda(), xx_channel.cuda(), yy_channel.cuda()], dim=1)
 
         if self.radius_channel:
             radius_calc = torch.sqrt(torch.pow(xx_channel - 0.5, 2) + torch.pow(yy_channel - 0.5, 2))
